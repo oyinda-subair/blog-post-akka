@@ -13,7 +13,7 @@ lazy val akkaHttpTest = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVer
 
 lazy val commonSettings = Seq(
   version := "1.0",
-  scalaVersion := "2.13.0",
+  scalaVersion := "2.12.8",
   scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
