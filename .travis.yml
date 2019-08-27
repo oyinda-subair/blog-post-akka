@@ -9,7 +9,8 @@ services:
   - postgresql
 
 before_script:
-  - psql -c 'create database playdb;' -U postgres
+  - psql -c 'create database blogpost;' -U postgres
+  - sbt flywayMigrate
 
 script:
   - sbt clean coverage test coverageReport

@@ -5,22 +5,33 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import scala.io.StdIn
 
-object ServiceMain {
+import scala.io.StdIn
+import akka.stream.alpakka.slick.scaladsl._
+import akka.stream.scaladsl._
+import org.d3.assessment.commands.BlogPostCommands
+import org.d3.assessment.repo.UserEntities
+import org.d3.assessment.database.DB
+import org.d3.assessment.route.BlogPostRoute
+import slick.basic.DatabaseConfig
+import slick.jdbc.{GetResult, JdbcProfile}
+
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+
+object ServiceMain extends UserEntities with DB {
   def main(args: Array[String]) :Unit = {
 
-    implicit val system = ActorSystem("my-system")
-    implicit val materializer = ActorMaterializer()
+    implicit val system: ActorSystem = ActorSystem("my-system")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
     // needed for the future flatMap/onComplete in the end
-    implicit val executionContext = system.dispatcher
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-    val route =
-      path("hello") {
-        get {
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-        }
-      }
+    lazy val userDb: UserRepository = new UserRepository
+    lazy val blogPostCommands = new BlogPostCommands(userDb)
+    lazy val blogPostRoute = new BlogPostRoute(blogPostCommands)
+
+    lazy val route = blogPostRoute.routes
+
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 5000)
 
