@@ -35,5 +35,9 @@ trait UserEntities { this: DB =>
     def getUserByEmail(email: String): Future[Option[UserEntity]] = db.run {
       Users.filter(_.email === email).result.headOption
     }
+
+    def getUserById(userId: Int): Future[Option[UserEntity]] = db.run {
+      Users.filter(_.id === userId).result.headOption
+    }
   }
 }

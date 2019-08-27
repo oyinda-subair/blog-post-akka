@@ -14,7 +14,5 @@ trait DB extends AppConfig {
     driver = pgDriver
   )
 
-//  lazy val db: Database = Database.forConfig("slick-postgres")
-
   implicit val session: Session = db.createSession()
 }
