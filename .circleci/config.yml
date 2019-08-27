@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+      # Service container image available at `host: localhost`
+
+      - image: circleci/postgres:9.6.9-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: blogpost
+    steps:
+      - checkout
+      - restore_cache:
+          key: scala-library-dependencies-{{ checksum "build.sbt" }}
+      - run: sbt test:compile
+      - save_cache:
+          paths: [ "~/.m2", "~/.ivy2", "~/.cache/coursier" ]
+          key: scala-library-dependencies-{{ checksum "build.sbt" }}
+      - run: sbt flywayMigrate
+      - run: sbt clean coverage test coverageReport
+      - run: bash <(curl -s https://codecov.io/bash)
