@@ -39,5 +39,9 @@ trait PostEntities extends UserEntities { this: DB =>
     def getPostsByUserId(userId: Int): Future[Seq[PostEntity]] = db.run {
       Posts.filter(_.userId === userId).result
     }
+
+    def getPostById(postId: Int): Future[Option[PostEntity]] = db.run {
+      Posts.filter(_.id === postId).result.headOption
+    }
   }
 }

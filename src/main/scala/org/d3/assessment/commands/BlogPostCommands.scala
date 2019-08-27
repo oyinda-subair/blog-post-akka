@@ -1,10 +1,9 @@
 package org.d3.assessment.commands
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCode, StatusCodes}
 import org.d3.assessment.config.AppConfig
 import org.d3.assessment.messages._
-import org.d3.assessment.model.{PostEntity, UserEntity}
+import org.d3.assessment.model._
 import org.d3.assessment.repo._
 
 import scala.concurrent.Future
@@ -12,7 +11,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class BlogPostCommands(
                         userRepo: UserEntities#UserRepository,
-                        postRepo: PostEntities#PostRepository)(implicit val system: ActorSystem) extends AppConfig{
+                        postRepo: PostEntities#PostRepository,
+                        commentRepo: CommentEntities#CommentRepository)(implicit val system: ActorSystem) extends AppConfig{
 
   // User commands
   def createUser(request: CreateUserRequest): Future[UserResponse] = {
@@ -34,9 +34,9 @@ class BlogPostCommands(
   }
 
   // Post Commands
-  def createPost(request: CreatePostRequest, userId: String): Future[PostEntity] = {
+  def createPost(request: CreatePostRequest, userId: Int): Future[PostEntity] = {
     for{
-      postEntity <- postRepo.create(request.title, request.content, userId.toInt)
+      postEntity <- postRepo.create(request.title, request.content, userId)
     } yield postEntity
   }
 
@@ -60,9 +60,37 @@ class BlogPostCommands(
     response.flatMap(res => res)
   }
 
-  def getPostByUserId(userId: String): Future[Seq[PostEntity]] = {
+  def getPostByUserId(userId: Int): Future[Seq[PostEntity]] = {
     for {
-      postEntity <- postRepo.getPostsByUserId(userId.toInt)
+      postEntity <- postRepo.getPostsByUserId(userId)
     } yield postEntity
+  }
+
+  // Comments Commands
+  def createComment(request: CreateCommentRequest, userId: Int, postId: Int): Future[CommentEntity] = {
+    for {
+      comment <- commentRepo.create(request.comment, userId, postId)
+    } yield comment
+  }
+
+  def getPostComments(postId: Int): Future[Seq[PostCommentResponse]] = {
+    val response = for {
+      comments <- commentRepo.getCommentsByPostId(postId)
+      commentResponse = Future.sequence {
+        comments.map { comment =>
+          getUserById(comment.userId).map { userOpt =>
+            PostCommentResponse(comment.comment, userOpt.map(_.name))
+          }
+        }
+      }
+    } yield commentResponse
+
+    response.flatMap(result => result)
+  }
+
+  private def getUserById(userId: Int): Future[Option[UserResponse]] = {
+    for {
+      userOpt <- userRepo.getUserById(userId)
+    } yield userOpt.map(user => UserResponse(user.name, user.email))
   }
 }

@@ -8,7 +8,13 @@ object UserResponse {
 }
 
 
-case class PostResponse(title: String, content: String, user: Option[UserResponse])
+case class PostResponse(title: String, content: String, author: Option[UserResponse] = None, comments: Option[Seq[PostCommentResponse]] = None)
 object PostResponse {
   implicit val format: Format[PostResponse] = Json.format
+}
+
+
+case class PostCommentResponse(comment: String, author: Option[String])
+object PostCommentResponse {
+  implicit val format: Format[PostCommentResponse] = Json.format
 }

@@ -6,7 +6,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import org.d3.assessment.commands.BlogPostCommands
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import org.d3.assessment.messages.{CreatePostRequest, CreateUserRequest, ErrorResponse}
+import org.d3.assessment.messages.{CreateCommentRequest, CreatePostRequest, CreateUserRequest, ErrorResponse}
 
 class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
 
@@ -35,11 +35,11 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
 
   // Post routes
   protected val createPost: Route =
-    path("posts") {
+    path("user" / IntNumber / "posts") { userId =>
       post {
         entity(as[CreatePostRequest]) { request =>
           // user constant id until token is implemented
-          complete(StatusCodes.Created, command.createPost(request, "1"))
+          complete(StatusCodes.Created, command.createPost(request, userId))
         }
       }
     }
@@ -52,10 +52,19 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
     }
 
   protected val getUserPosts: Route =
-    path("user"/"posts"){
+    path("user" / IntNumber / "posts") { userId =>
       get {
         // user constant id until token is implemented
-        complete(StatusCodes.OK, command.getPostByUserId("1"))
+        complete(StatusCodes.OK, command.getPostByUserId(userId))
+      }
+    }
+
+  protected val createComment: Route =
+    path("user" / IntNumber / "post" / IntNumber) { (userId, postId) =>
+      post {
+        entity(as[CreateCommentRequest]) { request =>
+          complete(StatusCodes.Created, command.createComment(request, userId, postId))
+        }
       }
     }
 
@@ -65,5 +74,6 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
     allUsers ~
     createPost ~
     getAllPosts ~
-    getUserPosts
+    getUserPosts ~
+    createComment
 }
