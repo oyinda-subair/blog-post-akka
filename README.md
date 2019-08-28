@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/oyinda-subair/blog-post-akka/branch/master/graph/badge.svg)](https://codecov.io/gh/oyinda-subair/blog-post-akka)
+[![CircleCI](https://circleci.com/gh/oyinda-subair/blog-post-akka.svg?style=svg)](https://circleci.com/gh/oyinda-subair/blog-post-akka)
 # blog-post-akka
 
 #### User Stories
