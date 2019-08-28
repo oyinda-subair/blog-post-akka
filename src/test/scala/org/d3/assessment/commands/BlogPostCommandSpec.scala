@@ -1,7 +1,7 @@
 package org.d3.assessment.commands
 
 import akka.http.scaladsl.server.Directives
-import org.d3.assessment.messages.{CreatePostRequest, CreateUserRequest}
+import org.d3.assessment.messages.{CreateCommentRequest, CreatePostRequest, CreateUserRequest}
 import org.d3.assessment.testkit
 import org.d3.assessment.Util._
 import org.scalatest.concurrent.ScalaFutures
@@ -44,7 +44,7 @@ class BlogPostCommandSpec extends WordSpec with Matchers with Directives with te
 
         Await.result(blogPostCommands.createUser(post), 10.second)
 
-        whenReady(blogPostCommands.getuserByEmail(post.email)) { response =>
+        whenReady(blogPostCommands.getUserByEmail(post.email)) { response =>
           response.isDefined shouldBe true
           response.get.name shouldEqual post.name
         }
@@ -80,6 +80,40 @@ class BlogPostCommandSpec extends WordSpec with Matchers with Directives with te
             whenReady(blogPostCommands.getPostByUserId(response.userId)) { userPost =>
               userPost.nonEmpty shouldBe true
               userPost.size should be > 0
+            }
+          }
+        }
+      }
+    }
+
+    "Comment Command" should {
+      "create user comment on post" in {
+        val user = CreateUserRequest(s"$string10 post", s"$string10@email.com", s"$string10-word")
+
+        whenReady(blogPostCommands.createUser(user)) { response =>
+          val post = CreatePostRequest(s"$string10 title", s"$string10 $string10")
+          whenReady(blogPostCommands.createPost(post, response.userId)) { postResponse =>
+            val comment = CreateCommentRequest("i love it")
+            whenReady(blogPostCommands.createComment(comment, response.userId, postResponse.postId)) { commentResponse =>
+              commentResponse.userId shouldBe response.userId
+              commentResponse.postId shouldBe postResponse.postId
+            }
+          }
+        }
+      }
+
+      "return comment for post" in {
+        val user = CreateUserRequest(s"$string10 post", s"$string10@email.com", s"$string10-word")
+
+        whenReady(blogPostCommands.createUser(user)) { response =>
+          val post = CreatePostRequest(s"$string10 title", s"$string10 $string10")
+          whenReady(blogPostCommands.createPost(post, response.userId)) { postResponse =>
+            val comment = CreateCommentRequest("i love it")
+            whenReady(blogPostCommands.createComment(comment, response.userId, postResponse.postId)) { commentResponse =>
+              whenReady(blogPostCommands.getPostComments(postResponse.postId)) { postComments =>
+                postComments.nonEmpty shouldBe true
+                postComments.head.author shouldBe Some(user.name)
+              }
             }
           }
         }

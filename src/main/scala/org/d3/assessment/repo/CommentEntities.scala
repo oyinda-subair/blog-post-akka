@@ -28,7 +28,7 @@ trait CommentEntities extends PostEntities { this: DB =>
   class CommentRepository(implicit ex: ExecutionContext) {
     val Comments = TableQuery[CommentTable]
 
-    def create(comment: String, postId: Int, userId: Int): Future[CommentEntity] = db.run {
+    def create(comment: String, userId: Int, postId: Int): Future[CommentEntity] = db.run {
       (Comments.map(c ⇒ (c.comment, c.postId, c.userId))
         returning Comments.map(_.id)
         into ((idComment, commentId) ⇒ CommentEntity(commentId, idComment._1, idComment._2, idComment._3))

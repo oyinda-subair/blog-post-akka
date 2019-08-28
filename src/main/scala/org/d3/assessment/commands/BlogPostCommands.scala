@@ -27,7 +27,7 @@ class BlogPostCommands(
     } yield users.map(user => UserResponse(user.name, user.email))
   }
 
-  def getuserByEmail(email: String): Future[Option[UserEntity]] = {
+  def getUserByEmail(email: String): Future[Option[UserEntity]] = {
     for {
       user <- userRepo.getUserByEmail(email)
     } yield user

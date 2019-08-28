@@ -15,7 +15,7 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
     path("users") {
       post {
         entity(as[CreateUserRequest]) { request =>
-          val checkEmail = command.getuserByEmail(request.email)
+          val checkEmail = command.getUserByEmail(request.email)
           val errorResponse = ErrorResponse(409, "Email exists already").toStrEntity
           onSuccess(checkEmail) {
             case Some(_) => complete(HttpResponse(StatusCodes.Conflict, entity = errorResponse))
