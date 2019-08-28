@@ -47,7 +47,7 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
   protected val getAllPosts: Route =
     path("posts") {
       get {
-        complete(StatusCodes.OK, command.getAllPost)
+        complete(StatusCodes.OK, command.getAllPosts)
       }
     }
 

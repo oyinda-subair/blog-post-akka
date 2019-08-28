@@ -15,10 +15,10 @@ class BlogPostCommands(
                         commentRepo: CommentEntities#CommentRepository)(implicit val system: ActorSystem) extends AppConfig{
 
   // User commands
-  def createUser(request: CreateUserRequest): Future[UserResponse] = {
+  def createUser(request: CreateUserRequest): Future[UserEntity] = {
     for {
       entity <- userRepo.create(request.copy(password = hashPassword(request.password)))
-    } yield UserResponse(entity.name, entity.email)
+    } yield entity
   }
 
   def getAllUsers: Future[Seq[UserResponse]] = {
@@ -40,7 +40,7 @@ class BlogPostCommands(
     } yield postEntity
   }
 
-  def getAllPost: Future[Seq[PostResponse]] = {
+  def getAllPosts: Future[Seq[PostResponse]] = {
     val response = for {
       posts <- postRepo.getAllPosts
       postResponse = Future.sequence {
