@@ -55,7 +55,11 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
     path("user" / IntNumber / "posts") { userId =>
       get {
         // user constant id until token is implemented
-        complete(StatusCodes.OK, command.getPostByUserId(userId))
+        val errorResponse = ErrorResponse(404, "User does not exists").toStrEntity
+        onSuccess(command.getUserById(userId)) {
+          case Some(_) => complete(StatusCodes.OK, command.getPostByUserId(userId))
+          case None => complete(HttpResponse(StatusCodes.NotFound, entity = errorResponse))
+        }
       }
     }
 
@@ -63,7 +67,11 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport {
     path("user" / IntNumber / "post" / IntNumber) { (userId, postId) =>
       post {
         entity(as[CreateCommentRequest]) { request =>
-          complete(StatusCodes.Created, command.createComment(request, userId, postId))
+          val errorResponse = ErrorResponse(404, "User does not exists").toStrEntity
+          onSuccess(command.getUserById(userId)) {
+            case Some(_) => complete(StatusCodes.Created, command.createComment(request, userId, postId))
+            case None => complete(HttpResponse(StatusCodes.NotFound, entity = errorResponse))
+          }
         }
       }
     }

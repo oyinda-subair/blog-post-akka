@@ -88,7 +88,7 @@ class BlogPostCommands(
     response.flatMap(result => result)
   }
 
-  private def getUserById(userId: Int): Future[Option[UserResponse]] = {
+  def getUserById(userId: Int): Future[Option[UserResponse]] = {
     for {
       userOpt <- userRepo.getUserById(userId)
     } yield userOpt.map(user => UserResponse(user.name, user.email))
