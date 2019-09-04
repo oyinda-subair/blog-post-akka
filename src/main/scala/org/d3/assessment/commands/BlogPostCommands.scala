@@ -1,14 +1,11 @@
 package org.d3.assessment.commands
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.server._
-import akka.http.scaladsl.server.Directives._
 import org.d3.assessment.config.AppConfig
 import org.d3.assessment.config.PasswordConfig._
 import org.d3.assessment.messages._
 import org.d3.assessment.model._
 import org.d3.assessment.repo._
-import org.d3.assessment.route.JwtTokenGenerator
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

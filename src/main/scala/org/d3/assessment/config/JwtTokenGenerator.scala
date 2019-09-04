@@ -1,9 +1,8 @@
-package org.d3.assessment.route
+package org.d3.assessment.config
 
-import org.d3.assessment.config.AppConfig
 import org.d3.assessment.messages.UserClaim
 import pdi.jwt.{Jwt, JwtAlgorithm}
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.Json
 
 import scala.util.{Failure, Success, Try}
 

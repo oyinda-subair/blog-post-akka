@@ -4,7 +4,6 @@ import akka.http.scaladsl.server._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server.Directives._
 import org.d3.assessment.messages.UserClaim
-import org.d3.assessment.route.{JwtTokenGenerator, JwtTokenGeneratorServices}
 
 trait DirectiveConfig extends AppConfig {
   val jwtTokenGenerator: JwtTokenGeneratorServices = new JwtTokenGenerator
