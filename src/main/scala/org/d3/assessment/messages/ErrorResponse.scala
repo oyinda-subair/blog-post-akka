@@ -2,7 +2,7 @@ package org.d3.assessment.messages
 
 import play.api.libs.json.{Format, Json}
 
-case class ErrorResponse(code: Int, message: String) {
+case class ErrorResponse(code: Int, `type`: String, message: String) {
   def toStrEntity = Json.toJson(this).toString()
 }
 

@@ -6,6 +6,9 @@ val akkaSlickVersion   = "1.1.1"
 val playJsonVersion    = "2.7.3"
 val flywayVersion      = "5.0.2"
 val scalaTestVersion   = "3.0.8"
+val akkaHttpSessionVersion = "0.5.10"
+val pauldijouVersion = "4.0.0"
+val log4jVersion     = "2.10.0"
 
 val akkaHttp       = "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion
 val akkaStream     = "com.typesafe.akka" %% "akka-stream"          % akkaStreamVersion
@@ -22,7 +25,16 @@ val akkaStreamTest = "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.19" % T
 val akkaTest       = "com.typesafe.akka" %% "akka-testkit" % "2.5.19" % Test
 val akkaHttpTest   = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test
 
-val slf4j          = "org.slf4j" % "slf4j-log4j12" % "1.7.26"
+val log4jApi       = "org.apache.logging.log4j"      %  "log4j-api"                % log4jVersion
+val log4jCore      = "org.apache.logging.log4j"      %  "log4j-core"               % log4jVersion
+val qos            = "ch.qos.logback" % "logback-classic" % "1.2.3"
+val scalaLogging   = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
+
+val akkaHttpSessionCore = "com.softwaremill.akka-http-session" %% "core" % akkaHttpSessionVersion
+val akkaHttpSessionJwt  = "com.softwaremill.akka-http-session" %% "jwt"  % akkaHttpSessionVersion
+val jodaTime            = "joda-time" % "joda-time" % "2.10.3"
+
+val pauldijouJwt        = "com.pauldijou" %% "jwt-core" % "4.0.0"
 
 lazy val commonSettings = Seq(
   version := "1.0",
@@ -54,6 +66,11 @@ lazy val root = (project in file("."))
       postgres,
       playJson,
       playJsonSupport,
+      pauldijouJwt,
+      log4jApi,
+      log4jCore,
+      qos,
+      scalaLogging,
       scalaTest
     )
   )
@@ -66,3 +83,5 @@ flywayUrl in Test := "jdbc:postgresql://localhost:5432/blogpost"
 flywayUser in Test := "postgres"
 flywayPassword in Test := ""
 flywayBaselineOnMigrate := true
+
+envFileName in ThisBuild := "dotenv"
