@@ -3,6 +3,6 @@ coverage:
   round: down
   precision: 5
   ignore:
-    - "config/**/*"
-    - "messages/**/*"
-    - "ServiceMain.scala"
+    - "src/org/d3/assessment/config/*"
+    - "src/org/d3/assessment/messages/*"
+    - "src/org/d3/assessment/ServiceMain.scala"
