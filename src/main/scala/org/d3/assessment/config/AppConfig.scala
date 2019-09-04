@@ -1,9 +1,12 @@
 package org.d3.assessment.config
 
 import com.typesafe.config.ConfigFactory
-import org.mindrot.jbcrypt.BCrypt
+import org.slf4j.LoggerFactory
 
 trait AppConfig {
+
+  lazy val className: String = if(this.getClass.getCanonicalName != null)
+    this.getClass.getCanonicalName else "none"
 
   val config = ConfigFactory.load()
 
@@ -14,11 +17,7 @@ trait AppConfig {
   val pgHost: String = config.getString("slick-postgres.db.host")
   val pgDBName: String = config.getString("slick-postgres.db.name")
 
-  def hashPassword(password: String): String = {
-    BCrypt.hashpw(password, BCrypt.gensalt())
-  }
+  val secret: String = config.getString("secret.jwt")
 
-  def confirmPassword(password: String, hashPassword: String): Boolean = {
-    BCrypt.checkpw(password, hashPassword)
-  }
+  val logger = LoggerFactory.getLogger(className)
 }
