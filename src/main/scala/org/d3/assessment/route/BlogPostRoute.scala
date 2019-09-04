@@ -6,7 +6,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import org.d3.assessment.commands.BlogPostCommands
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import org.d3.assessment.config.DirectiveConfig
+import org.d3.assessment.config.{DirectiveConfig, JwtTokenGenerator}
 import org.d3.assessment.config.PasswordConfig.confirmPassword
 import org.d3.assessment.messages._
 
