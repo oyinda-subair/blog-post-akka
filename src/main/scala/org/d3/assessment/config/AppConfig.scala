@@ -17,7 +17,7 @@ trait AppConfig {
   val pgHost: String = config.getString("slick-postgres.db.host")
   val pgDBName: String = config.getString("slick-postgres.db.name")
 
-  val secret: String = System.getenv("JWT_SECRET")// config.getString("secret.jwt")
+  val secret: String = System.getenv("JWT_SECRET")
 
   val logger = LoggerFactory.getLogger(className)
 }

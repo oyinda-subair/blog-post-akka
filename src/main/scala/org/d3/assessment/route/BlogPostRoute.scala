@@ -84,6 +84,13 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport with Dire
       }
     }
 
+  protected val getComments: Route =
+    path("post" / IntNumber / "comments") { postId =>
+      get {
+        complete(StatusCodes.OK, command.getPostComments(postId))
+      }
+    }
+
   protected val login: Route =
     path("login") {
       post{
@@ -115,5 +122,6 @@ class BlogPostRoute(command: BlogPostCommands) extends PlayJsonSupport with Dire
     getAllPosts ~
     getUserPosts ~
     createComment ~
+    getComments ~
     login
 }
